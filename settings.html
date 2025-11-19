@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - KeepAll</title>
+    <meta name="description" content="Customize your KeepAll experience with minimal, elegant settings">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inter:wght@300;400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    
+    <style>
+        :root {
+            /* Color Palette */
+            --manilla-cream: #F5F1E8;
+            --espresso-brown: #3C2415;
+            --latte-beige: #D4B896;
+            --soft-gray: #8B7355;
+            --wes-anderson-yellow: #FFC857;
+            --muted-sage: #A8B5A0;
+            --dusty-rose: #E8C5C5;
+            --warm-charcoal: #2D1810;
+            --deep-espresso: #1A1611;
+            --cream-white: #F7F3E9;
+            --soft-mocha: #3D3429;
+            --golden-accent: #E6B85C;
+            
+            /* Typography */
+            --font-typewriter: 'Courier Prime', 'Courier New', monospace;
+            --font-sans: 'Inter', 'Helvetica Neue', sans-serif;
+            --font-serif: 'Crimson Text', 'Georgia', serif;
+            
+            /* Spacing */
+            --space-xs: 8px;
+            --space-sm: 16px;
+            --space-md: 24px;
+            --space-lg: 32px;
+            --space-xl: 48px;
+            --space-xxl: 64px;
+            --space-xxxl: 96px;
+            
+            /* Shadows */
+            --shadow-soft: 0 4px 12px rgba(60, 36, 21, 0.1);
+            --shadow-hover: 0 8px 24px rgba(60, 36, 21, 0.15);
+            --shadow-deep: 0 12px 32px rgba(60, 36, 21, 0.2);
+        }
+        
+        [data-theme="dark"] {
+            --manilla-cream: var(--deep-espresso);
+            --espresso-brown: var(--cream-white);
+            --latte-beige: var(--soft-mocha);
+            --soft-gray: #A0927B;
+            --wes-anderson-yellow: var(--golden-accent);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--manilla-cream);
+            color: var(--espresso-brown);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        /* Background Texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('resources/paper-texture.png');
+            background-size: 200px 200px;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(245, 241, 232, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(60, 36, 21, 0.1);
+            z-index: 1000;
+            padding: var(--space-sm) 0;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-md);
+        }
+        
+        .logo {
+            font-family: var(--font-typewriter);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--espresso-brown);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: var(--space-lg);
+        }
+        
+        .nav-links a {
+            color: var(--espresso-brown);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--wes-anderson-yellow);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--wes-anderson-yellow);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--espresso-brown);
+            color: var(--espresso-brown);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            background: var(--espresso-brown);
+            color: var(--manilla-cream);
+        }
+        
+        /* Main Content */
+        .main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--space-xxxl) var(--space-md) var(--space-xl);
+        }
+        
+        .settings-header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+        }
+        
+        .settings-title {
+            font-family: var(--font-typewriter);
+            font-size: clamp(32px, 5vw, 48px);
+            color: var(--espresso-brown);
+            margin-bottom: var(--space-sm);
+        }
+        
+        .settings-subtitle {
+            color: var(--soft-gray);
+            font-size: 18px;
+        }
+        
+        /* Settings Sections */
+        .settings-section {
+            background: var(--latte-beige);
+            border-radius: 12px;
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--wes-anderson-yellow);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--espresso-brown);
+        }
+        
+        .section-title {
+            font-family: var(--font-typewriter);
+            font-size: 24px;
+            color: var(--espresso-brown);
+        }
+        
+        .section-description {
+            color: var(--soft-gray);
+            font-size: 14px;
+            margin-bottom: var(--space-lg);
+            line-height: 1.5;
+        }
+        
+        /* Settings Items */
+        .settings-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-md) 0;
+            border-bottom: 1px solid rgba(60, 36, 21, 0.1);
+        }
+        
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-content {
+            flex: 1;
+        }
+        
+        .item-title {
+            font-weight: 600;
+            color: var(--espresso-brown);
+            margin-bottom: 4px;
+        }
+        
+        .item-description {
+            font-size: 14px;
+            color: var(--soft-gray);
+            line-height: 1.4;
+        }
+        
+        .item-control {
+            margin-left: var(--space-md);
+        }
+        
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background: var(--soft-gray);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-switch.active {
+            background: var(--wes-anderson-yellow);
+        }
+        
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .toggle-switch.active::after {
+            transform: translateX(24px);
+        }
+        
+        /* Select Dropdown */
+        .settings-select {
+            background: var(--manilla-cream);
+            border: 1px solid var(--latte-beige);
+            border-radius: 8px;
+            padding: var(--space-xs) var(--space-sm);
+            font-family: var(--font-sans);
+            color: var(--espresso-brown);
+            cursor: pointer;
+            min-width: 120px;
+        }
+        
+        .settings-select:focus {
+            outline: none;
+            border-color: var(--wes-anderson-yellow);
+        }
+        
+        /* Color Picker */
+        .color-picker {
+            display: flex;
+            gap: var(--space-xs);
+            align-items: center;
+        }
+        
+        .color-option {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .color-option.active {
+            border-color: var(--espresso-brown);
+            transform: scale(1.1);
+        }
+        
+        .color-option:nth-child(1) { background: #FFC857; }
+        .color-option:nth-child(2) { background: #A8B5A0; }
+        .color-option:nth-child(3) { background: #E8C5C5; }
+        .color-option:nth-child(4) { background: #8B7355; }
+        
+        /* Button */
+        .settings-button {
+            background: var(--espresso-brown);
+            color: var(--manilla-cream);
+            border: none;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: 8px;
+            font-family: var(--font-sans);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .settings-button:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-soft);
+        }
+        
+        .settings-button.secondary {
+            background: var(--latte-beige);
+            color: var(--espresso-brown);
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+        }
+        
+        .stat-card {
+            background: var(--manilla-cream);
+            border-radius: 8px;
+            padding: var(--space-md);
+            text-align: center;
+            border: 1px solid var(--latte-beige);
+        }
+        
+        .stat-number {
+            font-family: var(--font-typewriter);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--espresso-brown);
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--soft-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Usage Chart */
+        .usage-chart {
+            height: 200px;
+            margin-top: var(--space-lg);
+            background: var(--manilla-cream);
+            border-radius: 8px;
+            border: 1px solid var(--latte-beige);
+        }
+        
+        /* Footer */
+        .footer {
+            background: var(--latte-beige);
+            padding: var(--space-xl) 0;
+            margin-top: var(--space-xxxl);
+            text-align: center;
+            border-top: 1px solid rgba(60, 36, 21, 0.1);
+        }
+        
+        .footer p {
+            color: var(--soft-gray);
+            font-size: 14px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .settings-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-sm);
+            }
+            
+            .item-control {
+                margin-left: 0;
+                align-self: flex-end;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+        
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+        .stagger-6 { animation-delay: 0.6s; }
+    </style>
+</head>
+<body data-theme="light">
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="#" class="logo">KeepAll</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="search.html">Search</a></li>
+                <li><a href="settings.html" class="active">Settings</a></li>
+            </ul>
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="settings-header fade-in">
+            <h1 class="settings-title">Settings</h1>
+            <p class="settings-subtitle">Customize your KeepAll experience with minimal, elegant preferences</p>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="settings-section fade-in stagger-1">
+            <div class="section-header">
+                <div class="section-icon">👤</div>
+                <h2 class="section-title">Profile</h2>
+            </div>
+            <p class="section-description">
+                Manage your account information and personal preferences.
+            </p>
+            
+            <div class="settings-item">
+                <div class="item-content">
+                    <div class="item-title">Display Name</div>
+                    <div class="item-description">Your name as it appears across KeepAll</div>
+                </div>
+                <div class="item-control">
+                    <input type="text" value="Alex Designer" class="settings-select" style="min-width: 150px;">
+                </div>
+            </div>
+            
+            <div class="settings-item">
+                <div class="item-content">
+                    <div class="item-title">Email Address</div>
+                    <div class="item-description">Used for account recovery and notifications</div>
+                </div>
+                <div class="item-control">
+                    <input type="email" value="alex@example.com" class="settings-select" style="min-width: 200px;">
+                </div>
+            </div>
+            
+            <div class="settings-item">
+                <div class="item-content">
+                    <div class="item-title">Profile Picture</div>
+                    <div class="item-description">Upload a custom avatar or use the default</div>
+                </div>
+                <div class="item-control">
+                    <button class="settings-button" onclick="uploadAvatar()">Upload</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appearance Section -->
+        <div class="settings-section fade-in stagger-2">
+            <div class="section-header">
+                <div class="section-icon">🎨</div>
+                <h2 class="section-title">Appearance</h2>
+            </div>
+            <p class="section-description">
+                Personalize the visual style and layout of your KeepAll experience.
+            </p>
+            
+            <div class="settings-item">
+                <div class="item-content">
+                    <div class="item-title">Dark Mode</div>
+                    <div class="item-description">Switch to a darker color scheme for better night viewing</div>
+                </div>
+                <div class="item-control">
+                    <div class="toggle-switch active" onclick="toggleDarkMode()"></div>
+                </div>
+            </div>
+            
+            <div class="settings-item">
+                <div class="item-content">
+                    <div class="item-title">Accent Color</div>
+                    <div class="item-description">Choose your preferred highlight color</div>
+                </div>
+                <div class="item-control">
+                    <div class="color-picker">
+                        <div class="color-option active" onclick="setAccentColor('yellow')"></div>
+                        <div class="color-option" onclick="setAccentColor('sage')"></div>
+                        <div class="color-option" onclick="setAccentColor('rose')"></div>
+                        <div class="color-option" onclick="setAccentColor('gray')"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-item">
+                <div class="item-content">
+                    <div class="item-title">Layout Density</div>
+                    <div class="item-description">Adjust the spacing and size of interface elements</div>
+                </div>
+                <div class="item-control">
+                    <select class="settings-select" onchange="setLayoutDensity(this.value)">
+                        <option value="comfortable">Comfortable</option>
+                        <option value="compact">Compact</option>
+                        <option value="spacious">Spacious</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="settings-item">
+                <div class="item-content">
+                    <div class="item-title">Animations</div>
+                    <div class="item-description">Enable smooth transitions and micro-interactions</div>
+                </div>
+                <div class="item-control">
+                    <div class="toggle-switch active" onclick="toggleAnimations()"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data & Privacy Section -->
+        <div class="settings-section fade-in stagger-3">
+            <div class="section-header">
+                <div class="section-icon">🔒</div>
+                <h2 class="section-title">Data & Privacy</h2>
+            </div>
+            <p class="section-description">
+                Manage your data, privacy settings, and account security.
+            </p>
+            
+            <div class="settings-item">
+                <div class="item-content">
+                    <div class="item-title">Export Bookmarks</div>
+                    <div class="item-description">Download all your bookmarks as a JSON file</div>
+                </div>
+                <div class="item-control">
+                    <button class="settings-button secondary" onclick="exportData()">Export</button>
+                </div>
+            </div>
+            
+            <div class="settings-item">
+                <div class="item-content">
+                    <div class="item-title">Import Bookmarks</div>
+                    <div class="item-description">Upload bookmarks from a JSON export file</div>
+                </div>
+                <div class="item-control">
+                    <button class="settings-button secondary" onclick="importData()">Import</button>
+                </div>
+            </div>
+            
+            <div class="settings-item">
+                <div class="item-content">
+                    <div class="item-title">Analytics</div>
+                    <div class="item-description">Help improve KeepAll by sharing anonymous usage data</div>
+                </div>
+                <div class="item-control">
+                    <div class="toggle-switch" onclick="toggleAnalytics()"></div>
+                </div>
+            </div>
+            
+            <div class="settings-item">
+                <div class="item-content">
+                    <div class="item-title">Clear All Data</div>
+                    <div class="item-description">Permanently delete all bookmarks and settings</div>
+                </div>
+                <div class="item-control">
+                    <button class="settings-button" style="background: var(--dusty-rose);" onclick="clearAllData()">Clear Data</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="settings-section fade-in stagger-4">
+            <div class="section-header">
+                <div class="section-icon">📊</div>
+                <h2 class="section-title">Usage Statistics</h2>
+            </div>
+            <p class="section-description">
+                Insights into how you use KeepAll and your bookmarking patterns.
+            </p>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">24</div>
+                    <div class="stat-label">Total Bookmarks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Categories</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Favorites</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Tags Used</div>
+                </div>
+            </div>
+            
+            <div class="usage-chart" id="usageChart"></div>
+        </div>
+
+        <!-- About Section -->
+        <div class="settings-section fade-in stagger-5">
+            <div class="section-header">
+                <div class="section-icon">ℹ️</div>
+                <h2 class="section-title">About KeepAll</h2>
+            </div>
+            <p class="section-description">
+                Information about your KeepAll installation and version details.
+            </p>
+            
+            <div class="settings-item">
+                <div class="item-content">
+                    <div class="item-title">Version</div>
+                    <div class="item-description">KeepAll v1.0.0 - Wes Anderson Edition</div>
+                </div>
+                <div class="item-control">
+                    <button class="settings-button secondary" onclick="checkUpdates()">Check Updates</button>
+                </div>
+            </div>
+            
+            <div class="settings-item">
+                <div class="item-content">
+                    <div class="item-title">License</div>
+                    <div class="item-description">Personal use license - Crafted with ❤️</div>
+                </div>
+                <div class="item-control">
+                    <button class="settings-button secondary" onclick="viewLicense()">View License</button>
+                </div>
+            </div>
+            
+            <div class="settings-item">
+                <div class="item-content">
+                    <div class="item-title">Support</div>
+                    <div class="item-description">Get help and report issues</div>
+                </div>
+                <div class="item-control">
+                    <button class="settings-button secondary" onclick="openSupport()">Contact Support</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 KeepAll. Crafted with meticulous attention to detail.</p>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        // Initialize settings page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSettingsPage();
+        });
+    </script>
+</body>
+</html>
