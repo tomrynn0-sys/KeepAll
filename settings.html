@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - KeepAll</title>
+    <meta name="description" content="Customize your KeepAll experience with themes, preferences, and account settings.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    
+    <style>
+        :root {
+            --manilla: #F4E4BC;
+            --espresso: #3C2415;
+            --latte: #D4A574;
+            --cream: #FAF7F0;
+            --parchment: #E8DCC0;
+            --charcoal: #2C2C2C;
+            --warm-gray: #8B7355;
+        }
+        
+        [data-theme="dark"] {
+            --manilla: #1A1A1A;
+            --espresso: #FAF7F0;
+            --latte: #E6C08A;
+            --cream: #2A2A2A;
+            --parchment: #4A4A4A;
+            --charcoal: #FAF7F0;
+            --warm-gray: #CCCCCC;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--manilla);
+            color: var(--espresso);
+            transition: all 0.3s ease;
+        }
+        
+        .font-typewriter {
+            font-family: 'Crimson Text', serif;
+        }
+        
+        .bg-paper {
+            background-image: 
+                radial-gradient(circle at 1px 1px, rgba(139, 115, 85, 0.05) 1px, transparent 0);
+            background-size: 20px 20px;
+        }
+        
+        .nav-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(250, 247, 240, 0.9);
+        }
+        
+        [data-theme="dark"] .nav-blur {
+            background: rgba(42, 42, 42, 0.9);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--parchment);
+            transition: 0.4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--latte);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        
+        .settings-section {
+            transition: all 0.3s ease;
+        }
+        
+        .settings-section:hover {
+            background-color: var(--cream);
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-option.active {
+            border-color: var(--espresso);
+            transform: scale(1.1);
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--latte), var(--parchment));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-paper" data-theme="light">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 nav-blur border-b border-parchment">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <img src="logo-keepall.png" alt="KeepAll" class="h-8 w-8">
+                    <span class="font-typewriter text-xl font-semibold text-espresso">KeepAll</span>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-warm-gray hover:text-latte transition-colors">Home</a>
+                    <a href="categories.html" class="text-warm-gray hover:text-latte transition-colors">Categories</a>
+                    <a href="settings.html" class="text-espresso hover:text-latte transition-colors font-medium">Settings</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-lg hover:bg-parchment transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2L13.09 8.26L20 9L14 14.74L15.18 21.02L10 17.77L4.82 21.02L6 14.74L0 9L6.91 8.26L10 2Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="pt-24 pb-8 bg-cream">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="fade-in">
+                <h1 class="font-typewriter text-4xl md:text-5xl font-semibold text-espresso mb-4">Settings</h1>
+                <p class="text-lg text-warm-gray max-w-2xl">
+                    Customize your KeepAll experience with themes, preferences, and account settings
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Settings Content -->
+    <section class="py-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="space-y-8">
+                
+                <!-- Profile Section -->
+                <div class="settings-section bg-cream rounded-lg border border-parchment p-6 fade-in">
+                    <div class="flex items-center space-x-6 mb-6">
+                        <div class="profile-avatar">TR</div>
+                        <div>
+                            <h2 class="font-typewriter text-2xl font-semibold text-espresso">Tom Rynn</h2>
+                            <p class="text-warm-gray">tomrynn0@gmail.com</p>
+                            <button class="mt-2 text-sm text-latte hover:underline">Edit Profile</button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="font-semibold text-espresso mb-2">Account Status</h3>
+                            <p class="text-warm-gray text-sm">Free Plan • 347 bookmarks</p>
+                            <button class="mt-2 text-sm bg-latte text-cream px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+                                Upgrade to Pro
+                            </button>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-espresso mb-2">Storage Used</h3>
+                            <div class="w-full bg-parchment rounded-full h-2 mb-2">
+                                <div class="bg-latte h-2 rounded-full" style="width: 34%"></div>
+                            </div>
+                            <p class="text-warm-gray text-sm">34% of 1GB used</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appearance Settings -->
+                <div class="settings-section bg-cream rounded-lg border border-parchment p-6 fade-in">
+                    <h2 class="font-typewriter text-xl font-semibold text-espresso mb-6">Appearance</h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Theme Toggle -->
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-semibold text-espresso">Dark Mode</h3>
+                                <p class="text-sm text-warm-gray">Switch between light and dark themes</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="dark-mode-toggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <!-- Color Scheme -->
+                        <div>
+                            <h3 class="font-semibold text-espresso mb-3">Color Scheme</h3>
+                            <p class="text-sm text-warm-gray mb-4">Choose your preferred color palette</p>
+                            <div class="color-palette">
+                                <div class="color-option active" style="background: #F4E4BC;" data-palette="manilla"></div>
+                                <div class="color-option" style="background: #E8DCC0;" data-palette="parchment"></div>
+                                <div class="color-option" style="background: #D4A574;" data-palette="latte"></div>
+                                <div class="color-option" style="background: #8B7355;" data-palette="warm-gray"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Font Size -->
+                        <div>
+                            <h3 class="font-semibold text-espresso mb-3">Font Size</h3>
+                            <div class="flex items-center space-x-4">
+                                <span class="text-sm text-warm-gray">Small</span>
+                                <input type="range" id="font-size-slider" min="12" max="20" value="16" class="flex-1">
+                                <span class="text-sm text-warm-gray">Large</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Animations -->
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-semibold text-espresso">Animations</h3>
+                                <p class="text-sm text-warm-gray">Enable smooth transitions and hover effects</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="animations-toggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Organization Settings -->
+                <div class="settings-section bg-cream rounded-lg border border-parchment p-6 fade-in">
+                    <h2 class="font-typewriter text-xl font-semibold text-espresso mb-6">Organization</h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Auto-categorization -->
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-semibold text-espresso">Auto-categorization</h3>
+                                <p class="text-sm text-warm-gray">Automatically sort new bookmarks into categories</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="auto-categorize-toggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <!-- Duplicate Detection -->
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-semibold text-espresso">Duplicate Detection</h3>
+                                <p class="text-sm text-warm-gray">Warn when adding duplicate bookmarks</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="duplicate-detection-toggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <!-- Default View -->
+                        <div>
+                            <h3 class="font-semibold text-espresso mb-3">Default View</h3>
+                            <select id="default-view" class="w-full px-3 py-2 bg-manilla border border-parchment rounded focus:border-latte focus:outline-none">
+                                <option value="grid">Grid View</option>
+                                <option value="list">List View</option>
+                                <option value="masonry">Masonry View</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Items Per Page -->
+                        <div>
+                            <h3 class="font-semibold text-espresso mb-3">Items Per Page</h3>
+                            <select id="items-per-page" class="w-full px-3 py-2 bg-manilla border border-parchment rounded focus:border-latte focus:outline-none">
+                                <option value="12">12 bookmarks</option>
+                                <option value="24" selected>24 bookmarks</option>
+                                <option value="48">48 bookmarks</option>
+                                <option value="96">96 bookmarks</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sync & Backup -->
+                <div class="settings-section bg-cream rounded-lg border border-parchment p-6 fade-in">
+                    <h2 class="font-typewriter text-xl font-semibold text-espresso mb-6">Sync & Backup</h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Cloud Sync -->
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-semibold text-espresso">Cloud Sync</h3>
+                                <p class="text-sm text-warm-gray">Sync bookmarks across all your devices</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="cloud-sync-toggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <!-- Auto Backup -->
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-semibold text-espresso">Auto Backup</h3>
+                                <p class="text-sm text-warm-gray">Automatically backup your bookmarks weekly</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="auto-backup-toggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <!-- Export/Import -->
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <button class="flex items-center justify-center space-x-2 px-4 py-3 bg-manilla border border-parchment rounded hover:bg-parchment transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                <span>Export Bookmarks</span>
+                            </button>
+                            <button class="flex items-center justify-center space-x-2 px-4 py-3 bg-manilla border border-parchment rounded hover:bg-parchment transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+                                </svg>
+                                <span>Import Bookmarks</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Last Backup -->
+                        <div>
+                            <h3 class="font-semibold text-espresso mb-2">Last Backup</h3>
+                            <p class="text-sm text-warm-gray mb-3">November 19, 2024 at 2:30 PM</p>
+                            <button class="text-sm bg-latte text-cream px-4 py-2 rounded hover:bg-opacity-90 transition-colors">
+                                Backup Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy & Security -->
+                <div class="settings-section bg-cream rounded-lg border border-parchment p-6 fade-in">
+                    <h2 class="font-typewriter text-xl font-semibold text-espresso mb-6">Privacy & Security</h2>
+                    
+                    <div class="space-y-6">
+                        <!-- Analytics -->
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-semibold text-espresso">Usage Analytics</h3>
+                                <p class="text-sm text-warm-gray">Help improve KeepAll by sharing anonymous usage data</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="analytics-toggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <!-- Data Encryption -->
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-semibold text-espresso">Data Encryption</h3>
+                                <p class="text-sm text-warm-gray">Encrypt your bookmarks for enhanced security</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="encryption-toggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <!-- Connected Services -->
+                        <div>
+                            <h3 class="font-semibold text-espresso mb-3">Connected Services</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-3 bg-manilla rounded-lg border border-parchment">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-blue-500 rounded flex items-center justify-center text-white text-sm font-bold">G</div>
+                                        <div>
+                                            <div class="font-medium text-espresso">Google Drive</div>
+                                            <div class="text-sm text-warm-gray">Backup sync enabled</div>
+                                        </div>
+                                    </div>
+                                    <button class="text-sm text-latte hover:underline">Disconnect</button>
+                                </div>
+                                
+                                <div class="flex items-center justify-between p-3 bg-manilla rounded-lg border border-parchment">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-gray-800 rounded flex items-center justify-center text-white text-sm font-bold">GH</div>
+                                        <div>
+                                            <div class="font-medium text-espresso">GitHub</div>
+                                            <div class="text-sm text-warm-gray">Import bookmarks from stars</div>
+                                        </div>
+                                    </div>
+                                    <button class="text-sm text-latte hover:underline">Disconnect</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About -->
+                <div class="settings-section bg-cream rounded-lg border border-parchment p-6 fade-in">
+                    <h2 class="font-typewriter text-xl font-semibold text-espresso mb-6">About</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-warm-gray">Version</span>
+                            <span class="text-espresso font-medium">1.2.0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-warm-gray">Last Updated</span>
+                            <span class="text-espresso font-medium">November 19, 2024</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-warm-gray">Developer</span>
+                            <a href="https://tomrynn0-sys.github.io/portfolio" class="text-latte hover:underline font-medium">Tom Rynn</a>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-parchment">
+                            <div class="flex space-x-4">
+                                <a href="mailto:tomrynn0@gmail.com" class="text-latte hover:underline text-sm">Contact Support</a>
+                                <a href="#" class="text-latte hover:underline text-sm">Privacy Policy</a>
+                                <a href="#" class="text-latte hover:underline text-sm">Terms of Service</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-espresso text-cream py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="mb-6">
+                <img src="logo-keepall.png" alt="KeepAll" class="h-12 w-12 mx-auto mb-4">
+                <h3 class="font-typewriter text-2xl font-semibold">KeepAll</h3>
+                <p class="text-warm-gray mt-2">Beautiful bookmark management for the modern web</p>
+            </div>
+            
+            <div class="border-t border-warm-gray pt-6">
+                <p class="text-sm text-warm-gray">
+                    © 2024 KeepAll. Designed with care by 
+                    <a href="https://tomrynn0-sys.github.io/portfolio" class="text-latte hover:underline">Tom Rynn</a> • 
+                    <a href="mailto:tomrynn0@gmail.com" class="text-latte hover:underline">tomrynn0@gmail.com</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
